@@ -16,15 +16,26 @@ import java.awt.image.VolatileImage;
 
 
 public class Renderer {
+    //Graphics Variables
     private static Frame frame;
     private static Canvas canvas;
 
+    //Canvas & Margins
     private static int canvasHeight = 400;
     private static int canvasWidth = 400;
 
     private static int margin = 10;
+
+    //Ticker  
     private static int ticker = 0; //counts frame rate
-    private static int refreshRate = 100;
+    private static int refreshRate = 100; //rate at which ticker triggers a new cycle
+
+    //FPS Variables
+    private static long lastFPSCheck = 0;
+    private static long nextFPSCheck = 0;
+    private static int currentFPS = 0;
+    private static int totalFrames = 0;
+
 
     //TEST Particle
     private static Particle p = new Particle(Color.PINK, new Coordinate(40, 20), new Coordinate(1, 2));
@@ -56,8 +67,22 @@ public class Renderer {
             public void run() {
                 GraphicsConfiguration gc = canvas.getGraphicsConfiguration();
                 VolatileImage vImage = gc.createCompatibleVolatileImage(canvasWidth, canvasHeight);
+                nextFPSCheck = lastFPSCheck + 1000000000;
 
                 while(true) {
+                    //FPS Tracker
+                    totalFrames++; 
+
+                    if(System.nanoTime() > nextFPSCheck) {
+                        //set next fps check
+                        nextFPSCheck = System.nanoTime() + 1000000000;
+                        currentFPS = totalFrames; //update FPS
+                        totalFrames = 0; //reset the number of frames counted
+
+                        //SYSTEM Output
+                        System.out.println("FPS: " + currentFPS);
+                    }
+
                     //if volatile image is deleted, recreate it
                     if(vImage.validate(gc) == VolatileImage.IMAGE_INCOMPATIBLE) {
                         vImage = gc.createCompatibleVolatileImage(canvasWidth, canvasHeight);

@@ -21,6 +21,6 @@ public class Particle {
         position.x += velocity.x;
         position.y += velocity.y;
 
-        System.out.println(position.x + " " + position.y);
+        //System.out.println(position.x + " " + position.y);
     }
 }
